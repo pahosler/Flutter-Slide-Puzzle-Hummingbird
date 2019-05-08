@@ -4,11 +4,17 @@
 
 Clone this repo
 
-`$ cd flutter_slide_puzzle`
+`$ cd Flutter-Slide-Puzzle-Hummingbird`
 
 `$ flutter packages get`
 
-`$ flutter run`
+`$ pub get`
+
+`$ webdev serve`
+
+if webdev doesn't work:
+
+`$ pub run build_runner serve`
 
 ## About
 
