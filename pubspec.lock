@@ -166,15 +166,19 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/flutter_web"
-      relative: true
-    source: path
+      ref: HEAD
+      resolved-ref: "7a92f7391ee8a72c398f879e357380084e2076b4"
+      url: "https://github.com/flutter/flutter_web"
+    source: git
     version: "0.0.0"
   flutter_web_ui:
     dependency: "direct main"
     description:
       path: "packages/flutter_web_ui"
-      relative: true
-    source: path
+      ref: HEAD
+      resolved-ref: "7a92f7391ee8a72c398f879e357380084e2076b4"
+      url: "https://github.com/flutter/flutter_web"
+    source: git
     version: "0.0.0"
   front_end:
     dependency: transitive
