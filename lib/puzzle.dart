@@ -1,5 +1,6 @@
 import 'package:flutter_web/material.dart';
 import 'dart:math';
+import 'dart:async';
 
 var now = new DateTime.now();
 Random rnd = new Random(now.millisecondsSinceEpoch);
@@ -31,12 +32,24 @@ class _PuzzleState extends State<Puzzle> {
         title: Center(child: Text(widget.title)),
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(
             child: board(),
           ),
           Center(
-            child: scrambleButton(),
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Center(
+                    child: scrambleButton(),
+                  ),
+                  Center(
+                    child: resetButton(),
+                  ),
+                ]),
           ),
         ],
       ),
@@ -47,12 +60,13 @@ class _PuzzleState extends State<Puzzle> {
     return Container(
       padding: EdgeInsets.all(10.0),
       margin: EdgeInsets.all(10.0),
-      width: 600,
+      width: 400,
       child: GridView.count(
         crossAxisCount: 4,
         crossAxisSpacing: 5.0,
         mainAxisSpacing: 5.0,
         children: List.generate(scrambled.length, (index) {
+          // if (!isSolvable(scrambled) && !checkWin()) scramble();
           return gameTile(scrambled[index]);
         }),
       ),
@@ -86,7 +100,7 @@ class _PuzzleState extends State<Puzzle> {
 
   Widget scrambleButton() {
     return Container(
-      height: 80.0,
+      height: 50.0,
       margin: EdgeInsets.only(bottom: 20.0),
       padding: EdgeInsets.all(10.0),
       child: RaisedButton(
@@ -94,12 +108,35 @@ class _PuzzleState extends State<Puzzle> {
         color: Colors.lightBlueAccent,
         splashColor: Colors.blue[100],
         onPressed: (() {
-          scrambled.clear();
-          scramble();
-          setState(() {});
+          do {
+            scrambled.clear();
+            scramble();
+            setState(() {});
+            isSolvable(scrambled) ? print('Solvable') : print('Not solvable');
+          } while (!isSolvable(scrambled));
         }),
         child: Text(
           'Click to Scramble!',
+          style: TextStyle(fontSize: 18, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget resetButton() {
+    return Container(
+      height: 50.0,
+      margin: EdgeInsets.only(bottom: 20.0),
+      padding: EdgeInsets.all(10.0),
+      child: RaisedButton(
+        highlightElevation: 6.0,
+        color: Colors.pinkAccent,
+        splashColor: Colors.red[100],
+        onPressed: (() {
+          reset();
+        }),
+        child: Text(
+          'Reset',
           style: TextStyle(fontSize: 18, color: Colors.white),
         ),
       ),
@@ -121,12 +158,54 @@ class _PuzzleState extends State<Puzzle> {
     if (scrambled.length < winner.length) {
       scramble();
     }
+    // return;
+  }
+
+  int getInvCount(arr) {
+    var inv_count = 0;
+    var N = 4;
+    for(int i = 0; i < N * N -1; i++){
+      for (int j = i + 1; j < N * N; j++){
+        if (arr[j] >0 && arr[i]>0 && arr[i] > arr[j])
+          inv_count++;
+      }
+    }
+    return inv_count;
+  }
+
+  findXPosition(arr) {
+    int N = 4;
+    for(int i = N-1; i >= 0; i--)
+      for(int j = N-1; j>=0; j--)
+        if(arr[i+(j*4)] == 0)
+          return N - i;
+  }
+
+  bool isSolvable(puzzle) {
+    var N = puzzle.length - 1;
+    var inv_count = getInvCount(puzzle);
+    if (N % 1 == 1)
+      return !(inv_count % 1 == 1);
+    else {
+      var pos = findXPosition(puzzle);
+      if(pos % 2 == 0)
+        return !(inv_count % 2 == 1);
+      else
+        return inv_count % 2 == 1;
+    }
+  }
+
+  void reset() {
+    scrambled.clear();
+    scrambled = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0];
+    setState(() {});
+    return;
   }
 
   void moveTile(tileClicked) {
     int blankTile = scrambled.indexOf(0);
     int selectedTile = scrambled.indexOf(tileClicked);
-    if (tileClicked == 0) {
+    if (tileClicked == 0 || checkWin()) {
       return;
     }
     if (blankTile == 3 && selectedTile == 4) {
@@ -178,9 +257,10 @@ class _PuzzleState extends State<Puzzle> {
           actions: <Widget>[
             FlatButton(
               onPressed: () {
-                scrambled.clear();
-                scramble();
-                setState(() {});
+                // scrambled.clear();
+                // scramble();
+                // setState(() {});
+                reset();
                 Navigator.pop(context);
               },
               child: Text("Play again"),
