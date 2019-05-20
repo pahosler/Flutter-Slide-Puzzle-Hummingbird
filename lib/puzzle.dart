@@ -1,6 +1,5 @@
 import 'package:flutter_web/material.dart';
 import 'dart:math';
-import 'dart:async';
 
 var now = new DateTime.now();
 Random rnd = new Random(now.millisecondsSinceEpoch);
