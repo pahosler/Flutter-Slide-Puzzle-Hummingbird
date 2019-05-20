@@ -1,0 +1,6 @@
+/.dart_tool
+/.packages
+/.vscode
+/android
+/ios
+pubspec.lock
