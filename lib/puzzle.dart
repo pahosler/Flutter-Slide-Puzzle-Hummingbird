@@ -34,12 +34,10 @@ class _PuzzleState extends State<Puzzle> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Expanded(
-            child: board(),
-          ),
+          Expanded(child: board()),
           Center(
             child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Center(
@@ -160,37 +158,43 @@ class _PuzzleState extends State<Puzzle> {
     // return;
   }
 
-  int getInvCount(arr) {
-    var inv_count = 0;
-    var N = 4;
-    for(int i = 0; i < N * N -1; i++){
-      for (int j = i + 1; j < N * N; j++){
-        if (arr[j] >0 && arr[i]>0 && arr[i] > arr[j])
-          inv_count++;
+  int getInvCount(List<int> arr) {
+    int inv_count = 0;
+    int N = 4;
+    for (int i = 0; i < N * N - 1; i++) {
+      for (int j = i + 1; j < N * N; j++) {
+        if (arr[j] > 0 && arr[i] > 0 && arr[i] > arr[j]) inv_count++;
       }
     }
     return inv_count;
   }
 
-  findXPosition(arr) {
+  findXPosition(List<int> arr) {
     int N = 4;
-    for(int i = N-1; i >= 0; i--)
-      for(int j = N-1; j>=0; j--)
-        if(arr[i+(j*4)] == 0)
-          return N - i;
+    int Pos;
+    for (int i = N - 1; i >= 0; i--) {
+      for (int j = N - 1; j >= 0; j--) {
+        if (arr[j + (i * 4)] == 0) {
+          Pos = N - i;
+        }
+      }
+    }
+    return Pos;
   }
 
-  bool isSolvable(puzzle) {
-    var N = puzzle.length - 1;
-    var inv_count = getInvCount(puzzle);
-    if (N % 1 == 1)
-      return !(inv_count % 1 == 1);
+  bool isSolvable(List<int> puzzle) {
+    int N = 4; //puzzle.length - 1;
+    int inv_count = getInvCount(puzzle);
+    print('inv_count $inv_count');
+    if (N % 2 == 1)
+      return !(inv_count % 2 == 0);
     else {
-      var pos = findXPosition(puzzle);
-      if(pos % 2 == 0)
+      int pos = findXPosition(puzzle);
+      print('pos       $pos');
+      if (pos % 2 == 0)
         return !(inv_count % 2 == 1);
       else
-        return inv_count % 2 == 1;
+        return inv_count % 2 == 0;
     }
   }
 
